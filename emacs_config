@@ -46,3 +46,45 @@
 (setq tab-width 2)
 (setq c-default-style "linux")
 (setq c-basic-offset 2)
+
+;;C-w to delete the whole line and M-w to copy the whole line
+(defadvice kill-ring-save (before slickcopy activate compile)  
+  (interactive  
+   (if mark-active (list (region-beginning) (region-end))  
+     (list (line-beginning-position)  
+           (line-beginning-position 2)))))  
+(defadvice kill-region (before slickcut activate compile)  
+  (interactive  
+   (if mark-active (list (region-beginning) (region-end))  
+     (list (line-beginning-position)  
+           (line-beginning-position 2)))))
+
+
+;; set open multi shell  
+(defun wcy-shell-mode-auto-rename-buffer (text)  
+  (if (eq major-mode 'shell-mode)  
+      (rename-buffer  (concat "shell:" default-directory) t)))  
+(add-hook 'comint-output-filter-functions'wcy-shell-mode-auto-rename-buffer)
+
+
+;; C-M-n jump to n line forward, C-M-p jump to n line backward
+(global-set-key (kbd "C-M-n")  
+    (lambda () (interactive) (next-line 5)))  
+(global-set-key (kbd "C-M-p")  
+    (lambda () (interactive) (previous-line 5)))
+
+;; C-z move to the middle of line
+(defun middle-of-line ()  
+  "Put cursor at the middle point of the line."  
+  (interactive)  
+  (goto-char (/ (+ (point-at-bol) (point-at-eol)) 2)))  
+(global-set-key (kbd "C-z") 'middle-of-line) 
+
+;; M-; to comment code
+(defun qiang-comment-dwim-line (&optional arg)  
+  (interactive "*P")  
+  (comment-normalize-vars)  
+  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))  
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position))  
+    (comment-dwim arg)))  
+(global-set-key "\M-;" 'qiang-comment-dwim-line) 
