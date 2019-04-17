@@ -46,6 +46,7 @@
 (setq tab-width 2)
 (setq c-default-style "linux")
 (setq c-basic-offset 2)
+(setq vc-handled-backends nil)
 
 ;;C-w to delete the whole line and M-w to copy the whole line
 (defadvice kill-ring-save (before slickcopy activate compile)  
